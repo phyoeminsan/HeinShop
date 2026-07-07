@@ -12,14 +12,26 @@ class Order extends Model
     use SoftDeletes;
     protected $table = 'orders';
     protected $fillable = [
-        'vocher_no',
+        'voucher_no',
         'total',
         'qty',
         'payment_slip',
         'status',
-        'notes',
+        'address',
         'item_id',
         'payment_id',
-        'user_id'
+        'user_id',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function item(){
+        return $this->belongsTo(Item::class);
+    }
+
+    public function payment(){
+        return $this->belongsTo(Payment::class);
+    }
 }

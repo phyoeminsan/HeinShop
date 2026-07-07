@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('vocher_no');
+            $table->string('voucher_no');
             $table->string('total');
             $table->string('qty');
             $table->string('payment_slip');
             $table->string('status');
-            $table->string('notes');
+            $table->text('address');
             $table->unsignedBigInteger('item_id');
             $table->foreign('item_id')
                   ->references('id')

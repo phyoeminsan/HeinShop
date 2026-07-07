@@ -21,14 +21,22 @@
                     @csrf
                     <div class="mb-3">
                         <label for="name">Name</label>
-                        <input type="text" name="name" id="name" class="form-control">
+                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid
+                        @enderror" value="{{ old('name') }}">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="logo">Logo</label>
-                        <input type="file" name="logo" id="logo" class="form-control">
+                        <input type="file" accept="image/.jpg,.jpeg,.png,.webp" name="logo" id="logo" class="form-control @error('name') is-invalid
+                        @enderror" value="{{ old('logo') }}"> 
+                        @error('logo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>

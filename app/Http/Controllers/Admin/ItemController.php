@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Item;
 use App\Models\Category;
+use App\Http\Requests\ItemRequest;
+use App\Http\Requests\ItemUpdateRequest;
 
 class ItemController extends Controller
 {
@@ -14,7 +16,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::orderBy('id','DESC')->paginate(5);
+        $items = Item::orderBy('id','DESC')->paginate(10);
         return view('admin.items.index', compact('items'));
     }
 
@@ -30,10 +32,19 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ItemRequest $request)
     {
         // dd($request);
         $items = Item::create($request->all());
+
+        //file upload
+        $file_name = time().'.'.$request->image->extension(); //123123456.png
+
+        $upload = $request->image->move(public_path('images/items/'),$file_name);
+        if($upload){
+            $items->image = "/images/items/".$file_name;
+        }
+        
         $items->save();
 
         return redirect()->route('backend.items.index');
@@ -52,15 +63,35 @@ class ItemController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $item = Item::find($id);
+        $categories = Category::all();
+        return view('admin.items.edit',compact('item','categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ItemUpdateRequest $request, string $id)
     {
-        //
+        // dd($request);
+        $item = Item::find($id);
+        $item->update($request->all());
+
+        if($request->hasFile('image')){
+            //file update
+            $file_name = time().'.'.$request->image->extension();
+
+            $upload = $request->image->move(public_path('images/items/'),$file_name);
+
+            if($upload){
+                $item->image = "/images/items/".$file_name;
+            }
+        }else{
+            $item->image = $request->old_image;
+        }
+        
+        $item->save();
+        return redirect()->route('backend.items.index');
     }
 
     /**
@@ -68,6 +99,9 @@ class ItemController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // echo "<h1>$id</h1>";
+        $item = Item::find($id);
+        $item->delete();
+        return redirect()->route('backend.items.index');
     }
 }

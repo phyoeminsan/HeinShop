@@ -49,10 +49,10 @@
                                 <td>{{$item->name}}</td>
                                 <td>{{$item->price}}</td>
                                 <td>{{$item->in_stock}}</td>
-                                <td>{{$item->category_id}}</td>
+                                <td>{{$item->category->name}}</td>
                                 <td>
-                                    <a href="" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="" class="btn btn-sm btn-danger">Delete</a>
+                                    <a href="{{ route('backend.items.edit',$item->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    <button type="submit" class="btn btn-sm btn-danger delete" data-id="{{ $item->id }}">Delete</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -62,4 +62,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-light">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h3>Are you sure delete?</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <form action="" id="deleteForm" method="post">
+                        @csrf 
+                        @method('delete')
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function(){
+         $('tbody').on('click','.delete',function(){
+            // alert('hello');
+            let id = $(this).data('id');
+            // console.log(id);
+            $('#deleteForm').attr('action',`items/${id}`);
+            $('#deleteModal').modal('show');
+         })
+        })
+    </script>
 @endsection
